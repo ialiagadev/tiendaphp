@@ -8,13 +8,12 @@ class ProductoController {
         $this->productoModel = new Producto(); // Instancia del modelo
     }
 
-    // Mostrar todos los productos
-    public function index() {
-        $productos = $this->productoModel->getAll();
-        require_once __DIR__ . "/../views/productos/index.php"; // Cargar la vista
+    // Obtener todos los productos
+    public function obtenerProductos() {
+        return $this->productoModel->getAll();
     }
 
-    // Mostrar detalle de un producto
+    // Obtener detalle de un producto
     public function detalle($id) {
         $producto = $this->productoModel->getById($id);
         if (!$producto) {

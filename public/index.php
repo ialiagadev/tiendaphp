@@ -3,12 +3,7 @@ require_once "../app/controllers/ProductoController.php";
 session_start();
 
 $controller = new ProductoController();
-
-// Obtener la lista de productos usando el método index()
-ob_start(); // Captura la salida para evitar problemas con `require`
-$controller->index();
-$productos = ob_get_clean(); // Guarda la salida en una variable y limpia el buffer
-
+$productos = $controller->obtenerProductos(); // Obtener productos desde el controlador
 ?>
 
 <!DOCTYPE html>
@@ -18,34 +13,32 @@ $productos = ob_get_clean(); // Guarda la salida en una variable y limpia el buf
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tienda Online</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-        .hero {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            padding: 4rem 0;
-            margin-bottom: 2rem;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
+        main {
+            flex: 1;
         }
         .card {
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .btn-add-to-cart {
+            transition: background-color 0.3s ease-in-out;
+        }
+        .btn-add-to-cart:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -71,26 +64,35 @@ $productos = ob_get_clean(); // Guarda la salida en una variable y limpia el buf
         </div>
     </nav>
 
-    <div class="hero text-center">
-        <div class="container">
-            <h1>Bienvenido a la Tienda Online</h1>
-            <p class="lead">Descubre nuestros productos increíbles</p>
+    <main class="container my-4">
+        <h1 class="text-center mb-4">Bienvenido a la Tienda Online</h1>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <?php foreach ($productos as $producto): ?>
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="<?= htmlspecialchars($producto['imagen']) ?>" class="card-img-top" alt="<?= htmlspecialchars($producto['nombre']) ?>">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title"><?= htmlspecialchars($producto['nombre']) ?></h5>
+                            <p class="card-text">$<?= number_format($producto['precio'], 2) ?></p>
+                            <div class="mt-auto d-flex flex-column gap-2">
+                                <a href="producto.php?id=<?= $producto['id'] ?>" class="btn btn-outline-primary">Ver Detalles</a>
+                                <a href="../public/carrito.php?accion=agregar&id=<?= $producto['id'] ?>" class="btn btn-primary btn-add-to-cart">
+                                    <i class="fas fa-cart-plus me-2"></i>Añadir al Carrito
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-    </div>
-
-    <div class="container mt-4">
-        <div class="row">
-            <?= $productos // Aquí se imprime la lista de productos desde `index()` ?>
-        </div>
-    </div>
+    </main>
 
     <footer class="bg-dark text-white text-center py-3 mt-5">
         <div class="container">
-            <p>&copy; 2023 Tienda Online. Todos los derechos reservados.</p>
+            <p class="mb-0">&copy; 2023 Tienda Online. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .navbar {
             box-shadow: 0 2px 4px rgba(0,0,0,.1);
@@ -17,8 +21,13 @@
             font-weight: bold;
             font-size: 1.5rem;
         }
+        main {
+            flex: 1 0 auto;
+        }
         .card {
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: none;
+            border-radius: 10px;
         }
         .card:hover {
             transform: translateY(-5px);
@@ -27,11 +36,55 @@
         .table-responsive {
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
         }
         .table th {
-            background-color: #007bff;
+            background-color: #f8f9fa;
+            color: #495057;
+            border: none;
+            font-weight: 600;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .btn {
+            border-radius: 5px;
+            padding: 8px 16px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #ced4da;
+        }
+        .btn-outline-secondary:hover {
+            color: #495057;
+            background-color: #e9ecef;
+        }
+        .footer {
+            background-color: #343a40;
             color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+        .quantity-input {
+            max-width: 60px;
+            text-align: center;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            line-height: 30px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -57,12 +110,12 @@
         </div>
     </nav>
 
-    <div class="container my-5">
-        <h1 class="text-center mb-4"><i class="fas fa-shopping-cart me-2"></i>Carrito de Compras</h1>
+    <main class="container my-5">
+        <h1 class="text-center mb-4">Carrito de Compras</h1>
 
         <?php if (empty($productos)): ?>
-            <div class="alert alert-warning text-center">
-                <i class="fas fa-exclamation-triangle me-2"></i>No hay productos en el carrito.
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>No hay productos en el carrito.
             </div>
         <?php else: ?>
             <div class="table-responsive">
@@ -82,16 +135,16 @@
                                 <td><?= htmlspecialchars($producto['nombre']) ?></td>
                                 <td>$<?= number_format($producto['precio'], 2) ?></td>
                                 <td>
-                                    <div class="input-group" style="max-width: 120px;">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(<?= $id ?>, -1)">-</button>
-                                        <input type="text" class="form-control form-control-sm text-center" value="<?= htmlspecialchars($producto['cantidad']) ?>" id="quantity-<?= $id ?>" readonly>
-                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(<?= $id ?>, 1)">+</button>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary quantity-btn" type="button" onclick="updateQuantity(<?= $id ?>, -1)">-</button>
+                                        <input type="text" class="form-control quantity-input" value="<?= htmlspecialchars($producto['cantidad']) ?>" id="quantity-<?= $id ?>" readonly>
+                                        <button class="btn btn-outline-secondary quantity-btn" type="button" onclick="updateQuantity(<?= $id ?>, 1)">+</button>
                                     </div>
                                 </td>
                                 <td>$<?= number_format($producto['precio'] * $producto['cantidad'], 2) ?></td>
                                 <td>
-                                    <a href="carrito.php?accion=eliminar&id=<?= $id ?>" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    <a href="carrito.php?accion=eliminar&id=<?= $id ?>" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -101,31 +154,33 @@
             </div>
             <div class="card mt-4">
                 <div class="card-body">
-                    <h3 class="card-title">Total: $<?= number_format($total, 2) ?></h3>
-                    <div class="d-flex justify-content-between mt-3">
-                        <a href="carrito.php?accion=vaciar" class="btn btn-warning">
-                            <i class="fas fa-trash me-2"></i>Vaciar Carrito
-                        </a>
-                        <form action="checkout.php" method="POST" class="d-inline-block">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-check me-2"></i>Finalizar Compra
-                            </button>
-                        </form>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title mb-0">Total: $<?= number_format($total, 2) ?></h3>
+                        <div>
+                            <a href="carrito.php?accion=vaciar" class="btn btn-outline-warning me-2">
+                                <i class="fas fa-trash me-1"></i>Vaciar Carrito
+                            </a>
+                            <form action="checkout.php" method="POST" class="d-inline-block">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-check me-1"></i>Finalizar Compra
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         <?php endif; ?>
 
         <div class="mt-4 text-center">
-            <a href="index.php" class="btn btn-primary">
-                <i class="fas fa-arrow-left me-2"></i>Seguir Comprando
+            <a href="index.php" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-1"></i>Seguir Comprando
             </a>
         </div>
-    </div>
+    </main>
 
-    <footer class="bg-dark text-white text-center py-3 mt-5">
+    <footer class="footer">
         <div class="container">
-            <p>&copy; 2023 Tienda Online. Todos los derechos reservados.</p>
+            <p class="mb-0">&copy; 2023 Tienda Online. Todos los derechos reservados.</p>
         </div>
     </footer>
 
@@ -142,4 +197,3 @@
     </script>
 </body>
 </html>
-
