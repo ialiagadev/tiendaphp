@@ -4,7 +4,6 @@ session_start();
 
 $controller = new ProductoController();
 
-// Obtener categoría seleccionada si existe
 $categoria_id = isset($_GET['categoria']) ? intval($_GET['categoria']) : null;
 $data = $controller->obtenerProductosConCategorias($categoria_id);
 $productos = $data['productos'];
@@ -51,6 +50,9 @@ $categorias = $data['categorias'];
             right: 10px;
             z-index: 1;
         }
+        .subcategoria {
+            padding-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +91,13 @@ $categorias = $data['categorias'];
                         <option value="<?= $categoria['id'] ?>" <?= $categoria_id == $categoria['id'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($categoria['nombre']) ?>
                         </option>
+                        <?php if (!empty($categoria['subcategorias'])): ?>
+                            <?php foreach ($categoria['subcategorias'] as $subcategoria): ?>
+                                <option value="<?= $subcategoria['id'] ?>" <?= $categoria_id == $subcategoria['id'] ? 'selected' : '' ?> class="subcategoria">
+                                    └─ <?= htmlspecialchars($subcategoria['nombre']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -96,7 +105,7 @@ $categorias = $data['categorias'];
 
         <div id="productos-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <?php foreach ($productos as $producto): ?>
-                <div class="col producto-item" data-nombre="<?= htmlspecialchars($producto['nombre']) ?>">
+                <div class="col producto-item" data-nombre="<?= strtolower(htmlspecialchars($producto['nombre'])) ?>">
                     <div class="card h-100">
                         <?php if ($producto['stock'] < 10): ?>
                             <div class="stock-badge">

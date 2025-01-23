@@ -1,7 +1,4 @@
 <?php
-// Evitar la redeclaración de la clase si ya ha sido incluida
-if (!class_exists('ProductoController')) {
-
 require_once __DIR__ . "/../models/Producto.php";
 require_once __DIR__ . "/../models/Categoria.php";
 
@@ -24,7 +21,7 @@ class ProductoController {
 
     // Obtener todas las categorías
     public function obtenerCategorias() {
-        return $this->categoriaModel->getAll();
+        return $this->categoriaModel->getAllWithSubcategories();
     }
 
     // Obtener productos con sus categorías
@@ -47,7 +44,25 @@ class ProductoController {
         }
         require_once __DIR__ . "/../views/productos/detalle.php";
     }
-}
 
-} // Fin de la comprobación if (!class_exists('ProductoController'))
+    // Buscar productos
+    public function buscarProductos($termino) {
+        return $this->productoModel->buscar($termino);
+    }
+
+    // Obtener productos destacados
+    public function obtenerProductosDestacados($limite = 4) {
+        return $this->productoModel->getDestacados($limite);
+    }
+
+    // Obtener productos más vendidos
+    public function obtenerProductosMasVendidos($limite = 4) {
+        return $this->productoModel->getMasVendidos($limite);
+    }
+
+    // Obtener productos recientes
+    public function obtenerProductosRecientes($limite = 4) {
+        return $this->productoModel->getRecientes($limite);
+    }
+}
 
