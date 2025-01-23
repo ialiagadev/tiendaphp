@@ -50,7 +50,14 @@ $categorias = $data['categorias'];
             right: 10px;
             z-index: 1;
         }
-        .subcategoria {
+        #categoria {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #categoria optgroup {
+            font-weight: bold;
+        }
+        #categoria option {
             padding-left: 20px;
         }
     </style>
@@ -88,16 +95,19 @@ $categorias = $data['categorias'];
                 <select id="categoria" class="form-select">
                     <option value="">Todas las categorías</option>
                     <?php foreach ($categorias as $categoria): ?>
-                        <option value="<?= $categoria['id'] ?>" <?= $categoria_id == $categoria['id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($categoria['nombre']) ?>
-                        </option>
-                        <?php if (!empty($categoria['subcategorias'])): ?>
-                            <?php foreach ($categoria['subcategorias'] as $subcategoria): ?>
-                                <option value="<?= $subcategoria['id'] ?>" <?= $categoria_id == $subcategoria['id'] ? 'selected' : '' ?> class="subcategoria">
-                                    └─ <?= htmlspecialchars($subcategoria['nombre']) ?>
+                        <optgroup label="<?= htmlspecialchars($categoria['nombre']) ?>">
+                            <?php if (!empty($categoria['subcategorias'])): ?>
+                                <?php foreach ($categoria['subcategorias'] as $subcategoria): ?>
+                                    <option value="<?= $subcategoria['id'] ?>" <?= $categoria_id == $subcategoria['id'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($subcategoria['nombre']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <option value="<?= $categoria['id'] ?>" <?= $categoria_id == $categoria['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($categoria['nombre']) ?>
                                 </option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                            <?php endif; ?>
+                        </optgroup>
                     <?php endforeach; ?>
                 </select>
             </div>
