@@ -13,9 +13,19 @@ class CarritoController {
 
     // Mostrar el carrito
     public function index() {
-        $productos = $this->carrito->obtenerCarrito();
-        $total = $this->carrito->obtenerTotal();
+        $productos = $this->obtenerCarrito();
+        $total = $this->obtenerTotal();
         require_once __DIR__ . "/../views/carrito.php";
+    }
+
+    // Obtener el contenido del carrito
+    public function obtenerCarrito() {
+        return $this->carrito->obtenerCarrito();
+    }
+
+    // Obtener el total del carrito
+    public function obtenerTotal() {
+        return $this->carrito->obtenerTotal();
     }
 
     // Agregar un producto al carrito
@@ -40,3 +50,4 @@ class CarritoController {
     }
 }
 ?>
+

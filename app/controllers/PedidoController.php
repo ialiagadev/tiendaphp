@@ -59,7 +59,11 @@ class PedidoController {
         $totalPedidos = $this->pedidoModel->obtenerTotalPedidos($usuario_id);
         $totalPaginas = ceil($totalPedidos / $porPagina);
 
-        require_once __DIR__ . "/../../public/mis_pedidos.php";
+        return [
+            'pedidos' => $pedidos,
+            'totalPaginas' => $totalPaginas,
+            'paginaActual' => $pagina
+        ];
     } 
 
     // Ver detalles de un pedido específico
