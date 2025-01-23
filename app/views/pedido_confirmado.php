@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Pedido Confirmado</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="/TIENDA/public/css/styles.css">
 </head>
 <body>
     <div class="container">
-        <h2>¡Gracias por tu compra!</h2>
-        <p>Tu pedido ha sido confirmado con el número <strong>#<?= $_GET['pedido_id'] ?></strong>.</p>
-        <a href="index.php">Volver a la tienda</a>
+        <h1>¡Pedido Confirmado!</h1>
+        <?php if (isset($_GET['pedido_id'])): ?>
+            <p>Tu pedido ha sido registrado exitosamente con el ID #<?= htmlspecialchars($_GET['pedido_id']) ?></p>
+        <?php else: ?>
+            <p>No se pudo obtener el ID del pedido. Por favor, contacta con soporte.</p>
+        <?php endif; ?>
+        <a href="index.php" class="btn btn-primary">Volver a la tienda</a>
     </div>
 </body>
 </html>

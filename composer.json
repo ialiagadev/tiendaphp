@@ -1,0 +1,18 @@
+{
+    "name": "ivan/tienda",
+    "description": "Tienda online para manejo de productos y pagos con Stripe",
+    "require": {
+        "stripe/stripe-php": "^16.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ivan\\Tienda\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ivan",
+            "email": "ialiagadev@gmail.com"
+        }
+    ]
+}

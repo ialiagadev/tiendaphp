@@ -175,6 +175,9 @@
             <a href="index.php" class="btn btn-outline-primary">
                 <i class="fas fa-arrow-left me-1"></i>Seguir Comprando
             </a>
+            <form action="/TIENDA/public/stripe_checkout.php" method="POST">
+    <button type="submit" class="btn btn-success">Pagar con Stripe</button>
+</form>
         </div>
     </main>
 
@@ -182,6 +185,8 @@
         <div class="container">
             <p class="mb-0">&copy; 2023 Tienda Online. Todos los derechos reservados.</p>
         </div>
+       
+
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
