@@ -51,12 +51,6 @@ $categorias = $data['categorias'];
             right: 10px;
             z-index: 1;
         }
-        .destacado-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1;
-        }
     </style>
 </head>
 <body>
@@ -84,11 +78,11 @@ $categorias = $data['categorias'];
     <main class="container my-4">
         <h1 class="text-center mb-4">Bienvenido a la Tienda Online</h1>
         
-        <div class="row mb-4">
-            <div class="col-md-4">
+        <div class="row mb-4 g-3">
+            <div class="col-12 col-md-6">
                 <input type="text" id="busqueda" class="form-control" placeholder="Buscar productos...">
             </div>
-            <div class="col-md-4">
+            <div class="col-12 col-md-6">
                 <select id="categoria" class="form-select">
                     <option value="">Todas las categorías</option>
                     <?php foreach ($categorias as $categoria): ?>
@@ -102,13 +96,8 @@ $categorias = $data['categorias'];
 
         <div id="productos-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <?php foreach ($productos as $producto): ?>
-                <div class="col producto-item" data-nombre="<?= strtolower(htmlspecialchars($producto['nombre'])) ?>">
+                <div class="col producto-item" data-nombre="<?= htmlspecialchars($producto['nombre']) ?>">
                     <div class="card h-100">
-                        <?php if ($producto['destacado']): ?>
-                            <div class="destacado-badge">
-                                <span class="badge bg-warning text-dark">Destacado</span>
-                            </div>
-                        <?php endif; ?>
                         <?php if ($producto['stock'] < 10): ?>
                             <div class="stock-badge">
                                 <span class="badge bg-danger">¡Últimas <?= $producto['stock'] ?> unidades!</span>
@@ -161,11 +150,11 @@ $categorias = $data['categorias'];
 
         // Función para filtrar productos por nombre
         function filtrarProductos() {
-            const busqueda = busquedaInput.value.toLowerCase();
+            const busqueda = busquedaInput.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             Array.from(productos).forEach(producto => {
-                const nombre = producto.dataset.nombre;
-                const mostrar = nombre.includes(busqueda) || busqueda === '';
+                const nombre = producto.dataset.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const mostrar = nombre.includes(busqueda);
                 producto.style.display = mostrar ? '' : 'none';
             });
         }
