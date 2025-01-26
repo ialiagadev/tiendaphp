@@ -8,7 +8,7 @@ $categoria_id = isset($_GET['categoria']) ? intval($_GET['categoria']) : null;
 $precio_min = isset($_GET['precio_min']) ? floatval($_GET['precio_min']) : null;
 $precio_max = isset($_GET['precio_max']) ? floatval($_GET['precio_max']) : null;
 $pagina = isset($_GET['pagina']) ? intval($_GET['pagina']) : 1;
-$por_pagina = 12; // Número de productos por página
+$por_pagina = 9; // Número de productos por página
 
 $data = $controller->obtenerProductosConCategorias($categoria_id, $precio_min, $precio_max, $pagina, $por_pagina);
 $productos = $data['productos'];
@@ -48,25 +48,36 @@ $rango_precios = $data['rango_precios'];
         }
         .card-img-wrapper {
             position: relative;
-            padding-top: 75%; /* 4:3 Aspect Ratio */
+            padding-top: 75%; /* Aspect Ratio 4:3 */
             overflow: hidden;
         }
         .card-img-top {
-            height: 200px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
         .card-body {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            padding: 0.75rem;
+        }
+        .card-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
         }
         .card-text {
-            flex-grow: 1;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
         }
         .product-price {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #007bff;
+            margin-bottom: 0.5rem;
         }
         .stock-badge {
             position: absolute;
@@ -148,7 +159,7 @@ $rango_precios = $data['rango_precios'];
                     <input type="text" id="busqueda" class="form-control" placeholder="Buscar productos...">
                 </div>
                 <?php if ($productos): ?>
-                    <div id="productos-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                    <div id="productos-container" class="row row-cols-1 row-cols-md-3 g-4">
                         <?php foreach ($productos as $producto): ?>
                             <div class="col producto-item" data-nombre="<?= strtolower(htmlspecialchars($producto['nombre'])) ?>">
                                 <div class="card h-100">
@@ -157,7 +168,9 @@ $rango_precios = $data['rango_precios'];
                                             <span class="badge bg-danger">¡Últimas <?= $producto['stock'] ?> unidades!</span>
                                         </div>
                                     <?php endif; ?>
-                                    <img src="<?= htmlspecialchars($producto['imagen']) ?>" class="card-img-top" alt="<?= htmlspecialchars($producto['nombre']) ?>">
+                                    <div class="card-img-wrapper">
+                                        <img src="<?= htmlspecialchars($producto['imagen']) ?>" class="card-img-top" alt="<?= htmlspecialchars($producto['nombre']) ?>">
+                                    </div>
                                     <div class="card-body d-flex flex-column">
                                         <h5 class="card-title"><?= htmlspecialchars($producto['nombre']) ?></h5>
                                         <p class="card-text"><?= htmlspecialchars($producto['descripcion']) ?></p>
@@ -168,16 +181,16 @@ $rango_precios = $data['rango_precios'];
                                             <small class="text-muted">Categoría: <?= htmlspecialchars($producto['categoria_nombre']) ?></small>
                                         </p>
                                         <div class="mt-auto d-flex flex-column gap-2">
-                                        <a href="producto.php?id=<?= $producto['id'] ?>" class="btn btn-outline-primary">
-                                        <i class="fas fa-info-circle me-2"></i>Ver Detalles
+                                            <a href="producto.php?id=<?= $producto['id'] ?>" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-info-circle me-1"></i>Ver Detalles
                                             </a>
                                             <?php if ($producto['stock'] > 0): ?>
-                                                <a href="carrito.php?accion=agregar&id=<?= $producto['id'] ?>" class="btn btn-primary btn-add-to-cart">
-                                                    <i class="fas fa-cart-plus me-2"></i>Añadir al Carrito
+                                                <a href="carrito.php?accion=agregar&id=<?= $producto['id'] ?>" class="btn btn-primary btn-sm btn-add-to-cart">
+                                                    <i class="fas fa-cart-plus me-1"></i>Añadir al Carrito
                                                 </a>
                                             <?php else: ?>
-                                                <button class="btn btn-secondary" disabled>
-                                                    <i class="fas fa-times-circle me-2"></i>Agotado
+                                                <button class="btn btn-secondary btn-sm" disabled>
+                                                    <i class="fas fa-times-circle me-1"></i>Agotado
                                                 </button>
                                             <?php endif; ?>
                                         </div>

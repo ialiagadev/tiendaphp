@@ -1,5 +1,13 @@
 <?php
-require_once "../app/controllers/UsuarioController.php";
-$controller = new UsuarioController();
-$controller->logout();
-?>
+session_start();
+
+// Destruir todas las variables de sesión
+$_SESSION = array();
+
+// Destruir la sesión
+session_destroy();
+
+// Redirigir al index
+header("Location: index.php");
+exit();
+
