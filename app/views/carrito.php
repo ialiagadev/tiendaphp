@@ -176,7 +176,6 @@
                 <i class="fas fa-arrow-left me-1"></i>Seguir Comprando
             </a>
             <form action="/TIENDA/public/stripe_checkout.php" method="POST">
-    <button type="submit" class="btn btn-success">Pagar con Stripe</button>
 </form>
         </div>
     </main>
