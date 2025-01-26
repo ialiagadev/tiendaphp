@@ -18,6 +18,8 @@ if (session_status() == PHP_SESSION_NONE) {
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="login.php"><i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión</a></li>
                     <li class="nav-item"><a class="nav-link" href="registro.php"><i class="fas fa-user-plus me-1"></i>Registrarse</a></li>
+                    <li class="nav-item"><a class="nav-link" href="mis_pedidos.php"><i class="fas fa-user-plus me-1"></i>Mis pedidos</a></li>
+
                 <?php endif; ?>
             </ul>
         </div>
