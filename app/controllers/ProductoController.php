@@ -11,31 +11,22 @@ class ProductoController {
         $this->categoriaModel = new Categoria();
     }
 
-    // Obtener todos los productos
-    public function obtenerProductos($categoria_id = null) {
-        if ($categoria_id) {
-            return $this->productoModel->getByCategory($categoria_id);
-        }
-        return $this->productoModel->getAll();
-    }
-
-    // Obtener todas las categorías
-    public function obtenerCategorias() {
-        return $this->categoriaModel->getAllWithSubcategories();
-    }
-
-    // Obtener productos con sus categorías
-    public function obtenerProductosConCategorias($categoria_id = null) {
-        $productos = $this->obtenerProductos($categoria_id);
-        $categorias = $this->obtenerCategorias();
+    public function obtenerProductosConCategorias($categoria_id = null, $precio_min = null, $precio_max = null, $pagina = 1, $por_pagina = 12) {
+        $offset = ($pagina - 1) * $por_pagina;
+        
+        $productos = $this->productoModel->getFiltered($categoria_id, $precio_min, $precio_max, $offset, $por_pagina);
+        $total_productos = $this->productoModel->getTotalFiltered($categoria_id, $precio_min, $precio_max);
+        $categorias = $this->categoriaModel->getAllWithSubcategories();
+        $rango_precios = $this->productoModel->getRangoPreciosGlobal();
 
         return [
             'productos' => $productos,
-            'categorias' => $categorias
+            'categorias' => $categorias,
+            'total_productos' => $total_productos,
+            'rango_precios' => $rango_precios
         ];
     }
 
-    // Obtener detalle de un producto
     public function detalle($id) {
         $producto = $this->productoModel->getById($id);
         if (!$producto) {
@@ -45,24 +36,60 @@ class ProductoController {
         require_once __DIR__ . "/../views/productos/detalle.php";
     }
 
-    // Buscar productos
     public function buscarProductos($termino) {
         return $this->productoModel->buscar($termino);
     }
 
-    // Obtener productos destacados
     public function obtenerProductosDestacados($limite = 4) {
         return $this->productoModel->getDestacados($limite);
     }
 
-    // Obtener productos más vendidos
     public function obtenerProductosMasVendidos($limite = 4) {
         return $this->productoModel->getMasVendidos($limite);
     }
 
-    // Obtener productos recientes
     public function obtenerProductosRecientes($limite = 4) {
         return $this->productoModel->getRecientes($limite);
+    }
+
+    public function agregarProducto($datos) {
+        // Validación de datos
+        if (empty($datos['nombre']) || empty($datos['precio']) || empty($datos['categoria_id'])) {
+            return ['error' => 'Faltan datos obligatorios'];
+        }
+
+        // Lógica para agregar el producto
+        $id = $this->productoModel->crear($datos);
+        if ($id) {
+            return ['success' => true, 'id' => $id];
+        } else {
+            return ['error' => 'No se pudo crear el producto'];
+        }
+    }
+
+    public function actualizarProducto($id, $datos) {
+        // Validación de datos
+        if (empty($datos['nombre']) || empty($datos['precio']) || empty($datos['categoria_id'])) {
+            return ['error' => 'Faltan datos obligatorios'];
+        }
+
+        // Lógica para actualizar el producto
+        $actualizado = $this->productoModel->actualizar($id, $datos);
+        if ($actualizado) {
+            return ['success' => true];
+        } else {
+            return ['error' => 'No se pudo actualizar el producto'];
+        }
+    }
+
+    public function eliminarProducto($id) {
+        // Lógica para eliminar el producto
+        $eliminado = $this->productoModel->eliminar($id);
+        if ($eliminado) {
+            return ['success' => true];
+        } else {
+            return ['error' => 'No se pudo eliminar el producto'];
+        }
     }
 }
 

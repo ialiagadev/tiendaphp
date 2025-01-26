@@ -47,4 +47,73 @@ class Producto {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getFiltered($categoria_id = null, $precio_min = null, $precio_max = null, $offset = 0, $limit = 12) {
+        $sql = "SELECT p.*, c.nombre as categoria_nombre 
+                FROM productos p 
+                LEFT JOIN categorias c ON p.categoria_id = c.id 
+                WHERE p.activo = 1";
+        $params = [];
+
+        if ($categoria_id) {
+            $sql .= " AND p.categoria_id = :categoria_id";
+            $params[':categoria_id'] = $categoria_id;
+        }
+
+        if ($precio_min !== null) {
+            $sql .= " AND p.precio >= :precio_min";
+            $params[':precio_min'] = $precio_min;
+        }
+
+        if ($precio_max !== null) {
+            $sql .= " AND p.precio <= :precio_max";
+            $params[':precio_max'] = $precio_max;
+        }
+
+        $sql .= " ORDER BY p.created_at DESC LIMIT :offset, :limit";
+        $params[':offset'] = $offset;
+        $params[':limit'] = $limit;
+
+        $stmt = $this->pdo->prepare($sql);
+        foreach ($params as $key => &$val) {
+            $stmt->bindParam($key, $val);
+        }
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalFiltered($categoria_id = null, $precio_min = null, $precio_max = null) {
+        $sql = "SELECT COUNT(*) FROM productos WHERE activo = 1";
+        $params = [];
+
+        if ($categoria_id) {
+            $sql .= " AND categoria_id = :categoria_id";
+            $params[':categoria_id'] = $categoria_id;
+        }
+
+        if ($precio_min !== null) {
+            $sql .= " AND precio >= :precio_min";
+            $params[':precio_min'] = $precio_min;
+        }
+
+        if ($precio_max !== null) {
+            $sql .= " AND precio <= :precio_max";
+            $params[':precio_max'] = $precio_max;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        foreach ($params as $key => &$val) {
+            $stmt->bindParam($key, $val);
+        }
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
+    }
+
+    public function getRangoPreciosGlobal() {
+        $stmt = $this->pdo->query("SELECT MIN(precio) as min_precio, MAX(precio) as max_precio FROM productos WHERE activo = 1");
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
+
