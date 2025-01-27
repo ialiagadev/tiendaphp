@@ -1,40 +1,43 @@
 <?php
-require_once '../vendor/autoload.php';
-require_once "../app/controllers/PedidoController.php";
-
+require_once "../config/stripe_config.php";
+require_once "../app/models/Carrito.php";
 session_start();
 
-if (!isset($_SESSION['usuario']) || !isset($_SESSION['carrito'])) {
-    header("Location: carrito.php");
-    exit();
+// Obtener los datos del carrito
+$carrito = new Carrito();
+$productos = $carrito->obtenerCarrito();
+$total = $carrito->obtenerTotal();
+
+if (empty($productos)) {
+    die("El carrito está vacío. No se puede procesar el pago.");
 }
 
-$pedidoController = new PedidoController();
-$total = $pedidoController->calcularTotalCarrito();
-
-\Stripe\Stripe::setApiKey('tu_clave_secreta_de_stripe');
-
+// Crear una sesión de Stripe Checkout
 try {
-    $session = \Stripe\Checkout\Session::create([
+    $checkout_session = \Stripe\Checkout\Session::create([
         'payment_method_types' => ['card'],
-        'line_items' => [[
-            'price_data' => [
-                'currency' => 'eur',
-                'unit_amount' => $total * 100, // Stripe usa céntimos
-                'product_data' => [
-                    'name' => 'Compra en Tienda Online',
-                ],
+       'line_items' => array_map(function ($producto) {
+    return [
+        'price_data' => [
+            'currency' => 'usd',
+            'product_data' => [
+                'name' => $producto['nombre'],
             ],
-            'quantity' => 1,
-        ]],
+            'unit_amount' => $producto['precio'] * 100, // Stripe trabaja en centavos
+        ],
+        'quantity' => $producto['cantidad'],
+    ];
+}, array_values($productos)), // Convertir a un array con índices secuenciales
+
         'mode' => 'payment',
-        'success_url' => 'https://cornflowerblue-alpaca-573297.hostingersite.com/confirmar_pedido.php?session_id={CHECKOUT_SESSION_ID}',
+    'success_url' => 'https://cornflowerblue-alpaca-573297.hostingersite.com/pedido_confirmado.php?pedido_id={CHECKOUT_SESSION_ID}',
         'cancel_url' => 'https://cornflowerblue-alpaca-573297.hostingersite.com/carrito.php',
     ]);
 
-    echo json_encode(['id' => $session->id]);
-} catch(Exception $e) {
-    http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    header("Location: " . $checkout_session->url);
+    exit();
+} catch (Exception $e) {
+    echo "❌ Error al crear la sesión de Stripe Checkout: " . $e->getMessage();
+    exit();
 }
-
+?>

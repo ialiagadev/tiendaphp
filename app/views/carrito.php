@@ -182,7 +182,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p class="mb-0">&copy; 2023 Tienda Online. Todos los derechos reservados.</p>
+            <p class="mb-0">&copy; 2025 Tienda Online. Todos los derechos reservados.</p>
         </div>
        
 
