@@ -30,17 +30,26 @@ class UsuarioController {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = $_POST["email"];
             $password = $_POST["password"];
-
+    
             $usuario = $this->usuarioModel->login($email, $password);
+    
             if ($usuario) {
                 $_SESSION["usuario"] = $usuario;
-                header("Location: index.php");
+    
+                // Redirigir según el rol del usuario
+                if ($usuario['rol'] === 'admin') {
+                    header("Location: ../admin/index.php");
+                } else {
+                    header("Location: ../public/index.php");
+                }
+                exit();
             } else {
-                echo "Credenciales incorrectas.";
+                echo "❌ Credenciales incorrectas.";
             }
         }
         require_once __DIR__ . "/../views/login.php";
     }
+    
 
     // Cerrar sesión
     public function logout() {

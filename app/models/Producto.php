@@ -115,5 +115,31 @@ class Producto {
         $stmt = $this->pdo->query("SELECT MIN(precio) as min_precio, MAX(precio) as max_precio FROM productos WHERE activo = 1");
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+        // Baja lógica (eliminar producto)
+        public function eliminar($id) {
+            $stmt = $this->pdo->prepare("UPDATE productos SET activo = 0 WHERE id = :id");
+            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        }
+    
+        // Reactivar un producto eliminado
+        public function reactivar($id) {
+            $stmt = $this->pdo->prepare("UPDATE productos SET activo = 1 WHERE id = :id");
+            $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        }
+    
+        // Obtener productos inactivos (para administración)
+        public function getInactivos() {
+            $stmt = $this->pdo->prepare("SELECT p.*, c.nombre as categoria_nombre 
+                                         FROM productos p 
+                                         LEFT JOIN categorias c ON p.categoria_id = c.id 
+                                         WHERE p.activo = 0
+                                         ORDER BY p.updated_at DESC");
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    
 }
 

@@ -11,6 +11,7 @@ class ProductoController {
         $this->categoriaModel = new Categoria();
     }
 
+    // Obtener productos con filtros y paginación
     public function obtenerProductosConCategorias($categoria_id = null, $precio_min = null, $precio_max = null, $pagina = 1, $por_pagina = 12) {
         $offset = ($pagina - 1) * $por_pagina;
         
@@ -27,6 +28,7 @@ class ProductoController {
         ];
     }
 
+    // Obtener detalles de un producto
     public function detalle($id) {
         $producto = $this->productoModel->getById($id);
         if (!$producto) {
@@ -36,60 +38,55 @@ class ProductoController {
         require_once __DIR__ . "/../views/productos/detalle.php";
     }
 
+    // Búsqueda de productos por nombre o categoría
     public function buscarProductos($termino) {
         return $this->productoModel->buscar($termino);
     }
 
+    // Obtener productos destacados
     public function obtenerProductosDestacados($limite = 4) {
         return $this->productoModel->getDestacados($limite);
     }
 
+    // Obtener los productos más vendidos
     public function obtenerProductosMasVendidos($limite = 4) {
         return $this->productoModel->getMasVendidos($limite);
     }
 
+    // Obtener los productos recientes
     public function obtenerProductosRecientes($limite = 4) {
         return $this->productoModel->getRecientes($limite);
     }
 
+    // Agregar un nuevo producto
     public function agregarProducto($datos) {
-        // Validación de datos
         if (empty($datos['nombre']) || empty($datos['precio']) || empty($datos['categoria_id'])) {
             return ['error' => 'Faltan datos obligatorios'];
         }
 
-        // Lógica para agregar el producto
         $id = $this->productoModel->crear($datos);
-        if ($id) {
-            return ['success' => true, 'id' => $id];
-        } else {
-            return ['error' => 'No se pudo crear el producto'];
-        }
+        return $id ? ['success' => true, 'id' => $id] : ['error' => 'No se pudo crear el producto'];
     }
 
+    // Actualizar un producto existente
     public function actualizarProducto($id, $datos) {
-        // Validación de datos
         if (empty($datos['nombre']) || empty($datos['precio']) || empty($datos['categoria_id'])) {
             return ['error' => 'Faltan datos obligatorios'];
         }
 
-        // Lógica para actualizar el producto
         $actualizado = $this->productoModel->actualizar($id, $datos);
-        if ($actualizado) {
-            return ['success' => true];
-        } else {
-            return ['error' => 'No se pudo actualizar el producto'];
-        }
+        return $actualizado ? ['success' => true] : ['error' => 'No se pudo actualizar el producto'];
     }
 
+    // Eliminar un producto (baja lógica)
     public function eliminarProducto($id) {
-        // Lógica para eliminar el producto
         $eliminado = $this->productoModel->eliminar($id);
-        if ($eliminado) {
-            return ['success' => true];
-        } else {
-            return ['error' => 'No se pudo eliminar el producto'];
-        }
+        return $eliminado ? ['success' => true] : ['error' => 'No se pudo eliminar el producto'];
+    }
+
+    // Reactivar un producto eliminado
+    public function reactivarProducto($id) {
+        $reactivado = $this->productoModel->reactivar($id);
+        return $reactivado ? ['success' => true] : ['error' => 'No se pudo reactivar el producto'];
     }
 }
-
