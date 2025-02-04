@@ -15,7 +15,7 @@ class Producto {
             FROM productos p 
             LEFT JOIN categorias c ON p.categoria_id = c.id 
             WHERE p.activo = 1
-            ORDER BY p.created_at DESC
+            ORDER BY p.id DESC
         ");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -28,7 +28,7 @@ class Producto {
             FROM productos p 
             LEFT JOIN categorias c ON p.categoria_id = c.id 
             WHERE p.categoria_id = :categoria_id AND p.activo = 1
-            ORDER BY p.created_at DESC
+            ORDER BY p.id DESC
         ");
         $stmt->bindParam(":categoria_id", $categoria_id, PDO::PARAM_INT);
         $stmt->execute();
@@ -70,7 +70,7 @@ class Producto {
             $params[':precio_max'] = $precio_max;
         }
 
-        $sql .= " ORDER BY p.created_at DESC LIMIT :offset, :limit";
+        $sql .= " ORDER BY p.id ASC LIMIT :offset, :limit";
         $params[':offset'] = $offset;
         $params[':limit'] = $limit;
 

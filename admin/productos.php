@@ -8,7 +8,15 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
 }
 
 $controller = new ProductoController();
-$productos = $controller->obtenerProductos(); // Obtener todos los productos
+
+// Configuración de paginación
+$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+$productos_por_pagina = 10;
+
+$productosData = $controller->obtenerProductosConCategorias(null, null, null, $pagina_actual, $productos_por_pagina);
+$productos = $productosData['productos'];
+$categorias = $productosData['categorias'];
+$total_productos = $productosData['total_productos'];
 
 ?>
 
@@ -19,9 +27,17 @@ $productos = $controller->obtenerProductos(); // Obtener todos los productos
     <title>Gestión de Productos</title>
     <link rel="stylesheet" href="css/admin-styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <?php include "templates/header.php"; ?>
+<?php include("../app/components/navbar.php"); ?>
     
     <div class="container">
         <h1 class="text-center my-4">Gestión de Productos</h1>
@@ -35,7 +51,8 @@ $productos = $controller->obtenerProductos(); // Obtener todos los productos
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th><a href="?orden=id">ID</a></th>
+                    <th>Imagen</th>
                     <th>Nombre</th>
                     <th>Precio</th>
                     <th>Stock</th>
@@ -45,9 +62,15 @@ $productos = $controller->obtenerProductos(); // Obtener todos los productos
                 </tr>
             </thead>
             <tbody id="productList">
-                <?php foreach ($productos as $producto): ?>
+                <?php 
+                usort($productos, function($a, $b) { return $a['id'] - $b['id']; }); // Ordenar por ID
+                
+                foreach ($productos as $producto): ?>
                     <tr data-name="<?= htmlspecialchars($producto['nombre']) ?>" data-category="<?= htmlspecialchars($producto['categoria_nombre']) ?>">
                         <td><?= $producto['id'] ?></td>
+                        <td>
+                            <img src="<?= htmlspecialchars($producto['imagen']) ?>" class="product-image" alt="<?= htmlspecialchars($producto['nombre']) ?>">
+                        </td>
                         <td><?= htmlspecialchars($producto['nombre']) ?></td>
                         <td>$<?= number_format($producto['precio'], 2) ?></td>
                         <td><?= $producto['stock'] ?></td>
@@ -61,9 +84,23 @@ $productos = $controller->obtenerProductos(); // Obtener todos los productos
                 <?php endforeach; ?>
             </tbody>
         </table>
+
+        <!-- Paginación -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php
+                $total_paginas = ceil($total_productos / $productos_por_pagina);
+                for ($i = 1; $i <= $total_paginas; $i++):
+                ?>
+                    <li class="page-item <?= ($i === $pagina_actual) ? 'active' : '' ?>">
+                        <a class="page-link" href="productos.php?pagina=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
     </div>
 
-    <?php include "templates/footer.php"; ?>
+    <?php include("../app/components/footer.php"); ?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
