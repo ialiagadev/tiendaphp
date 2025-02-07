@@ -11,36 +11,24 @@ class ProductoController {
         $this->categoriaModel = new Categoria();
     }
 
-    // Obtener productos con filtros y paginación
-    public function obtenerProductosConCategorias($categoria_id = null, $precio_min = null, $precio_max = null, $pagina = 1, $por_pagina = 12) {
-        $offset = ($pagina - 1) * $por_pagina;
-        
-        $productos = $this->productoModel->getFiltered($categoria_id, $precio_min, $precio_max, $offset, $por_pagina);
-        $total_productos = $this->productoModel->getTotalFiltered($categoria_id, $precio_min, $precio_max);
-        $categorias = $this->categoriaModel->getAllWithSubcategories();
-        $rango_precios = $this->productoModel->getRangoPreciosGlobal();
-
-        return [
-            'productos' => $productos,
-            'categorias' => $categorias,
-            'total_productos' => $total_productos,
-            'rango_precios' => $rango_precios
-        ];
-    }
-
-    // Obtener detalles de un producto
+    // Obtener detalles de un producto por ID
     public function detalle($id) {
-        $producto = $this->productoModel->getById($id);
-        if (!$producto) {
-            echo "Producto no encontrado.";
-            return;
-        }
-        require_once __DIR__ . "/../views/productos/detalle.php";
+        return $this->productoModel->getById($id);
     }
 
-    // Búsqueda de productos por nombre o categoría
+    // Agregar un nuevo producto con validaciones
+    public function agregarProducto($datos) {
+        if (empty($datos['nombre']) || empty($datos['precio']) || empty($datos['categoria_id'])) {
+            return ['error' => 'Faltan datos obligatorios'];
+        }
+
+        $id = $this->productoModel->crear($datos);
+        return $id ? ['success' => true, 'id' => $id] : ['error' => 'No se pudo crear el producto'];
+    }
+
+    // Búsqueda de productos por nombre o categoría (Global)
     public function buscarProductos($termino) {
-        return $this->productoModel->buscar($termino);
+        return $this->productoModel->getFiltered(null, null, null, 0, 1000, $termino);
     }
 
     // Obtener productos destacados
@@ -58,17 +46,7 @@ class ProductoController {
         return $this->productoModel->getRecientes($limite);
     }
 
-    // Agregar un nuevo producto
-    public function agregarProducto($datos) {
-        if (empty($datos['nombre']) || empty($datos['precio']) || empty($datos['categoria_id'])) {
-            return ['error' => 'Faltan datos obligatorios'];
-        }
-
-        $id = $this->productoModel->crear($datos);
-        return $id ? ['success' => true, 'id' => $id] : ['error' => 'No se pudo crear el producto'];
-    }
-
-    // Actualizar un producto existente
+    // Actualizar un producto existente con validaciones
     public function actualizarProducto($id, $datos) {
         if (empty($datos['nombre']) || empty($datos['precio']) || empty($datos['categoria_id'])) {
             return ['error' => 'Faltan datos obligatorios'];
@@ -88,5 +66,22 @@ class ProductoController {
     public function reactivarProducto($id) {
         $reactivado = $this->productoModel->reactivar($id);
         return $reactivado ? ['success' => true] : ['error' => 'No se pudo reactivar el producto'];
+    }
+
+    // Obtener productos con filtros, paginación y búsqueda global
+    public function obtenerProductosConCategorias($categoria_id = null, $precio_min = null, $precio_max = null, $pagina = 1, $por_pagina = 12, $busqueda = null) {
+        $offset = ($pagina - 1) * $por_pagina;
+        
+        $productos = $this->productoModel->getFiltered($categoria_id, $precio_min, $precio_max, $offset, $por_pagina, $busqueda);
+        $total_productos = $this->productoModel->getTotalFiltered($categoria_id, $precio_min, $precio_max, $busqueda);
+        $categorias = $this->categoriaModel->getAllWithSubcategories();
+        $rango_precios = $this->productoModel->getRangoPreciosGlobal();
+
+        return [
+            'productos' => $productos,
+            'categorias' => $categorias,
+            'total_productos' => $total_productos,
+            'rango_precios' => $rango_precios
+        ];
     }
 }

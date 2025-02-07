@@ -19,7 +19,7 @@
 </head>
 <body>
 
-    <?php include("../app/components/navbar.php"); ?>
+<?php include("../app/components/admin_navbar.php"); ?>
 
     <div class="container content-wrapper mt-4">
         <h1 class="text-center">Panel de Administración</h1>

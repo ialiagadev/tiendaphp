@@ -27,7 +27,7 @@ $categorias = $controller->obtenerCategorias(); // Obtener todas las categorías
     </style>
 </head>
 <body>
-    <?php include("../app/components/navbar.php"); ?>
+<?php include("../app/components/admin_navbar.php"); ?>
 
     <div class="container">
         <h1 class="text-center my-4">Gestión de Categorías</h1>
