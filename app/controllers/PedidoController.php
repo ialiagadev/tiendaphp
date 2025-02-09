@@ -145,6 +145,10 @@ class PedidoController {
         header("Location: admin_pedidos.php");
         exit();
     }
+    public function detallePedido($id) {
+        return $this->pedidoModel->getPedidoById($id);
+    }
+    
 
     public function getEstadoBadgeClass($estado) {
         switch ($estado) {
