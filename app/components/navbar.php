@@ -24,10 +24,11 @@ if (session_status() == PHP_SESSION_NONE) {
                     </li>
 
                     <?php if ($_SESSION['usuario']['rol'] === 'admin'): ?>  
-                        <li class="nav-item">
-                            <a class="btn btn-warning me-2" href="/admin/index.php"><i class="fas fa-cogs me-1"></i>Panel Admin</a>
-                        </li>
-                    <?php endif; ?>
+    <li class="nav-item">
+        <a class="btn btn-warning me-2" href="../admin/index.php"><i class="fas fa-cogs me-1"></i>Panel Admin</a>
+    </li>
+<?php endif; ?>
+
 
                     <li class="nav-item">
                         <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión</a>
