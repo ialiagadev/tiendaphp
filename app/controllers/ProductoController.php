@@ -86,6 +86,21 @@ class ProductoController {
         return $reactivado ? ['success' => true] : ['error' => 'No se pudo reactivar el producto'];
     }
 
+    public function obtenerProductoPorId($id) {
+        if (!is_numeric($id)) {
+            return false;
+        }
+    
+        $producto = $this->productoModel->getById($id);
+    
+        if (!$producto) {
+            return false; // Producto no encontrado
+        }
+    
+        return $producto;
+    }
+    
+
     // ✅ Obtener productos con filtros, paginación y búsqueda global
     public function obtenerProductosConCategorias($categoria_id = null, $precio_min = null, $precio_max = null, $pagina = 1, $por_pagina = 12, $busqueda = null) {
         $offset = ($pagina - 1) * $por_pagina;

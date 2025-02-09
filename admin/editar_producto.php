@@ -19,7 +19,7 @@ if (!isset($_GET['id'])) {
 }
 
 $id = $_GET['id'];
-$producto = $productoController->detalle($id);
+$producto = $productoController->obtenerProductoPorId($id);
 $categorias = $categoriaController->obtenerCategorias();
 
 if (!$producto) {
