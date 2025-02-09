@@ -25,7 +25,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
                     <?php if ($_SESSION['usuario']['rol'] === 'admin'): ?>  
                         <li class="nav-item">
-                            <a class="btn btn-warning me-2" href="../admin/index.php"><i class="fas fa-cogs me-1"></i>Panel Admin</a>
+                            <a class="btn btn-warning me-2" href="/admin/index.php">"><i class="fas fa-cogs me-1"></i>Panel Admin</a>
                         </li>
                     <?php endif; ?>
 
