@@ -48,9 +48,7 @@ $paginaActual = $resultado['paginaActual'];
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($pedidos as $pedido): 
-                            $productos = $pedidoController->obtenerProductosPorPedido($pedido['id']);
-                        ?>
+                        <?php foreach ($pedidos as $pedido): ?>
                             <tr>
                                 <td><?= $pedido['id'] ?></td>
                                 <td><?= $pedido['fecha'] ?></td>
@@ -58,12 +56,18 @@ $paginaActual = $resultado['paginaActual'];
                                 <td><?= ucfirst($pedido['estado']) ?></td>
                                 <td>
                                     <ul>
-                                        <?php foreach ($productos as $producto): ?>
-                                            <li>
-                                                <?= htmlspecialchars($producto['nombre_producto']) ?> - 
-                                                <?= $producto['cantidad'] ?> x $<?= number_format($producto['precio_unitario'], 2) ?>
-                                            </li>
-                                        <?php endforeach; ?>
+                                        <?php 
+                                        $productos = $pedidoController->obtenerProductosPorPedido($pedido['id']);
+                                        if (!empty($productos)): 
+                                            foreach ($productos as $producto): ?>
+                                                <li>
+                                                    <?= htmlspecialchars($producto['nombre_producto']) ?> - 
+                                                    <?= $producto['cantidad'] ?> x $<?= number_format($producto['precio_unitario'], 2) ?>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <li>No hay productos en este pedido.</li>
+                                        <?php endif; ?>
                                     </ul>
                                 </td>
                                 <td>

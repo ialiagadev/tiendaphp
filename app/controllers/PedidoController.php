@@ -145,9 +145,12 @@ class PedidoController {
         header("Location: admin_pedidos.php");
         exit();
     }
-    public function detallePedido($id) {
-        return $this->pedidoModel->getPedidoById($id);
+    public function obtenerProductosPorPedido($pedido_id) {
+        require_once __DIR__ . "/../models/Pedido.php";
+        $pedidoModel = new Pedido();
+        return $pedidoModel->obtenerProductosPedido($pedido_id);
     }
+    
     
 
     public function getEstadoBadgeClass($estado) {

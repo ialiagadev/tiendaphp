@@ -120,6 +120,18 @@ class Pedido {
         $stmt->execute();
         return $stmt->fetchColumn();
     }
+    public function obtenerProductosPedido($pedido_id) {
+        $stmt = $this->pdo->prepare("
+            SELECT pp.pedido_id, pr.nombre AS nombre_producto, pp.cantidad, pp.precio_unitario
+            FROM pedidos_productos pp
+            INNER JOIN productos pr ON pp.producto_id = pr.id
+            WHERE pp.pedido_id = :pedido_id
+        ");
+        $stmt->bindParam(":pedido_id", $pedido_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     public function getPedidoById($id) {
         $stmt = $this->pdo->prepare("
             SELECT p.*, u.nombre as cliente_nombre 
