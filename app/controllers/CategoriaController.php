@@ -21,94 +21,56 @@ class CategoriaController {
         return $this->categoriaModel->getById($id);
     }
 
+    // 🔹 Obtener todas las categorías principales (sin padre)
+    public function obtenerCategoriasPadre() {
+        return $this->categoriaModel->getMainCategories();
+    }
+
     // 🔹 Crear una nueva categoría
-    public function crearCategoria() {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $nombre = trim($_POST["nombre"]);
-            $descripcion = trim($_POST["descripcion"]);
-            $padre_id = !empty($_POST["padre_id"]) ? $_POST["padre_id"] : null;
+    public function crearCategoria($nombre, $descripcion, $padre_id = null) {
+        if (empty($nombre)) {
+            $_SESSION["error"] = "❌ El nombre de la categoría es obligatorio.";
+            return false;
+        }
 
-            if (empty($nombre)) {
-                $_SESSION["error"] = "❌ El nombre de la categoría es obligatorio.";
-                header("Location: ../admin/nueva_categoria.php");
-                exit();
-            }
-
-            if ($this->categoriaModel->crearCategoria($nombre, $descripcion, $padre_id)) {
-                $_SESSION["success"] = "✅ Categoría creada correctamente.";
-                header("Location: ../admin/categorias.php");
-                exit();
-            } else {
-                $_SESSION["error"] = "❌ No se pudo crear la categoría.";
-                header("Location: ../admin/nueva_categoria.php");
-                exit();
-            }
+        if ($this->categoriaModel->crearCategoria($nombre, $descripcion, $padre_id)) {
+            $_SESSION["success"] = "✅ Categoría creada correctamente.";
+            return true;
+        } else {
+            $_SESSION["error"] = "❌ No se pudo crear la categoría.";
+            return false;
         }
     }
 
     // 🔹 Actualizar una categoría existente
-    public function actualizarCategoria() {
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"])) {
-            $id = $_POST["id"];
-            $nombre = trim($_POST["nombre"]);
-            $descripcion = trim($_POST["descripcion"]);
-            $padre_id = !empty($_POST["padre_id"]) ? $_POST["padre_id"] : null;
+    public function actualizarCategoria($id, $nombre, $descripcion, $padre_id = null) {
+        if (empty($nombre)) {
+            $_SESSION["error"] = "❌ El nombre de la categoría es obligatorio.";
+            return false;
+        }
 
-            if (empty($nombre)) {
-                $_SESSION["error"] = "❌ El nombre de la categoría es obligatorio.";
-                header("Location: ../admin/editar_categoria.php?id=$id");
-                exit();
-            }
-
-            if ($this->categoriaModel->actualizarCategoria($id, $nombre, $descripcion, $padre_id)) {
-                $_SESSION["success"] = "✅ Categoría actualizada correctamente.";
-                header("Location: ../admin/categorias.php");
-                exit();
-            } else {
-                $_SESSION["error"] = "❌ No se pudo actualizar la categoría.";
-                header("Location: ../admin/editar_categoria.php?id=$id");
-                exit();
-            }
+        if ($this->categoriaModel->actualizarCategoria($id, $nombre, $descripcion, $padre_id)) {
+            $_SESSION["success"] = "✅ Categoría actualizada correctamente.";
+            return true;
+        } else {
+            $_SESSION["error"] = "❌ No se pudo actualizar la categoría.";
+            return false;
         }
     }
 
     // 🔹 Eliminar categoría (baja lógica)
-    public function eliminarCategoria() {
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"])) {
-            $id = $_POST["id"];
-
-            if ($this->categoriaModel->hasSubcategories($id)) {
-                $_SESSION["error"] = "❌ No se puede eliminar una categoría con subcategorías.";
-                header("Location: ../admin/categorias.php");
-                exit();
-            }
-
-            if ($this->categoriaModel->eliminarCategoria($id)) {
-                $_SESSION["success"] = "✅ Categoría eliminada correctamente.";
-                header("Location: ../admin/categorias.php");
-                exit();
-            } else {
-                $_SESSION["error"] = "❌ No se pudo eliminar la categoría.";
-                header("Location: ../admin/categorias.php");
-                exit();
-            }
+    public function eliminarCategoria($id) {
+        if ($this->categoriaModel->hasSubcategories($id)) {
+            $_SESSION["error"] = "❌ No se puede eliminar una categoría con subcategorías activas.";
+            return false;
         }
-    }
 
-    // 🔹 Reactivar categoría eliminada
-    public function reactivarCategoria() {
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"])) {
-            $id = $_POST["id"];
-
-            if ($this->categoriaModel->reactivarCategoria($id)) {
-                $_SESSION["success"] = "✅ Categoría reactivada correctamente.";
-                header("Location: ../admin/categorias.php");
-                exit();
-            } else {
-                $_SESSION["error"] = "❌ No se pudo reactivar la categoría.";
-                header("Location: ../admin/categorias.php");
-                exit();
-            }
+        if ($this->categoriaModel->eliminarCategoria($id)) {
+            $_SESSION["success"] = "✅ Categoría eliminada correctamente.";
+            return true;
+        } else {
+            $_SESSION["error"] = "❌ No se pudo eliminar la categoría.";
+            return false;
         }
     }
 }

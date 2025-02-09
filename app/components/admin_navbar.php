@@ -6,8 +6,9 @@ if (session_status() == PHP_SESSION_NONE) {
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="dashboard.php">🛠 Admin Panel</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Menú">
+        <a class="navbar-brand" href="index.php">🛠 Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" 
+            aria-controls="adminNavbar" aria-expanded="false" aria-label="Menú">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -20,20 +21,24 @@ if (session_status() == PHP_SESSION_NONE) {
             </ul>
 
             <ul class="navbar-nav">
-    <?php if (isset($_SESSION['usuario'])): ?>
-        <li class="nav-item">
-            <span class="navbar-text text-light me-3">👋 Bienvenido, <?= htmlspecialchars($_SESSION['usuario']['nombre']) ?></span>
-        </li>
-        <li class="nav-item">
-            <a class="btn btn-danger" href="../public/logout.php">🚪 Cerrar sesión</a>
-        </li>
-    <?php else: ?>
-        <li class="nav-item">
-            <a class="nav-link" href="../public/login.php">🔐 Iniciar sesión</a>
-        </li>
-    <?php endif; ?>
-</ul>
-
+                <?php if (isset($_SESSION['usuario'])): ?>
+                    <li class="nav-item">
+                        <span class="navbar-text text-light me-3">
+                            👋 Bienvenido, <?= htmlspecialchars($_SESSION['usuario']['nombre']) ?>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-danger" href="../public/logout.php">🚪 Cerrar sesión</a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../public/login.php">🔐 Iniciar sesión</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
         </div>
     </div>
 </nav>
+
+<!-- Bootstrap JS (Asegura que esto esté cargado en todas las páginas que usan el navbar) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

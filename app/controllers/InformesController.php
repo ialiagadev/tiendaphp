@@ -27,5 +27,6 @@ class InformesController {
         return $this->informesModel->getDetalleVentasDelMes();  // 
     }
     
+    
 }
 ?>

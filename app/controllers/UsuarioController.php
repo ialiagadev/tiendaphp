@@ -78,8 +78,6 @@ class UsuarioController {
         return $this->usuarioModel->getById($id);
     }
 
-
-
     // 🔹 ACTUALIZAR USUARIO (ADMIN)
     public function actualizarUsuario() {
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id"])) {
@@ -93,19 +91,17 @@ class UsuarioController {
             $ciudad = trim($_POST["ciudad"]);
             $codigo_postal = trim($_POST["codigo_postal"]);
             $pais = trim($_POST["pais"]);
-    
-            // Validación básica
+
             if (empty($nombre) || empty($email) || empty($rol)) {
                 header("Location: ../admin/editar_usuario.php?id=$id&error=Faltan datos obligatorios.");
                 exit();
             }
-    
+
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 header("Location: ../admin/editar_usuario.php?id=$id&error=Email inválido.");
                 exit();
             }
-    
-            // Intentar actualizar el usuario
+
             if ($this->usuarioModel->actualizar($id, $nombre, $email, $telefono, $rol, $activo, $calle, $ciudad, $codigo_postal, $pais)) {
                 header("Location: ../admin/usuarios.php?success=Usuario actualizado correctamente.");
                 exit();
@@ -115,31 +111,20 @@ class UsuarioController {
             }
         }
     }
-    
 
-    // 🔹 ELIMINAR USUARIO (BAJA LÓGICA)
-    public function eliminarUsuario() {
-        if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET") {
-            if (!isset($_REQUEST["id"]) || !is_numeric($_REQUEST["id"])) {
-                echo "❌ ID no válido.";
-                return;
-            }
-    
-            $id = $_REQUEST["id"];
-            if ($this->usuarioModel->eliminar($id)) {
-                header("Location: ../admin/usuarios.php?success=Usuario eliminado correctamente.");
-                exit();
-            } else {
-                echo "❌ No se pudo eliminar el usuario.";
-            }
+    // 🔹 ELIMINAR USUARIO POR ADMIN (BAJA LÓGICA)
+    public function eliminarUsuarioPorAdmin($id) {
+        if (!is_numeric($id)) {
+            return false;
         }
+        
+        return $this->usuarioModel->eliminar($id);
     }
-    
 
     // 🔹 REACTIVAR USUARIO
     public function reactivarUsuarioPorAdmin() {
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["id_usuario"])) {
-            $id = $_POST["id_usuario"]; // Asegurar que el campo sea el correcto
+            $id = $_POST["id_usuario"];
             
             if ($this->usuarioModel->reactivar($id)) {
                 $_SESSION['success'] = "✅ Usuario reactivado correctamente.";
@@ -150,7 +135,7 @@ class UsuarioController {
         header("Location: ../admin/usuarios.php");
         exit();
     }
-    
+
     public function crearUsuarioAdmin() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $nombre = trim($_POST["nombre"]);
@@ -163,26 +148,26 @@ class UsuarioController {
             $ciudad = trim($_POST["ciudad"] ?? '');
             $codigo_postal = trim($_POST["codigo_postal"] ?? '');
             $pais = trim($_POST["pais"] ?? '');
-    
+
             if (empty($nombre) || empty($email) || empty($password) || empty($rol)) {
                 $_SESSION['error'] = "❌ Todos los campos son obligatorios.";
                 header("Location: ../admin/nuevo_usuario.php");
                 exit();
             }
-    
+
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['error'] = "❌ Formato de email inválido.";
                 header("Location: ../admin/nuevo_usuario.php");
                 exit();
             }
-    
+
             $roles_validos = ['cliente', 'empleado', 'admin'];
             if (!in_array($rol, $roles_validos)) {
                 $_SESSION['error'] = "❌ Rol no permitido.";
                 header("Location: ../admin/nuevo_usuario.php");
                 exit();
             }
-    
+
             if ($this->usuarioModel->crearUsuarioAdmin($nombre, $email, $password, $rol, $direccion, $telefono, $calle, $ciudad, $codigo_postal, $pais)) {
                 $_SESSION['success'] = "✅ Usuario creado exitosamente.";
                 header("Location: ../admin/usuarios.php");
@@ -194,7 +179,6 @@ class UsuarioController {
             }
         }
     }
-    
 
     // 🔹 CERRAR SESIÓN
     public function logout() {

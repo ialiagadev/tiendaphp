@@ -35,7 +35,7 @@ class Producto {
     }
 
     // Obtener productos con filtros (paginación, búsqueda y categoría)
-    public function getFiltered($categoria_id = null, $precio_min = null, $precio_max = null, $offset = 0, $limit = 12, $busqueda = null) {
+    public function getFiltered($categoria_id = null, $precio_min = null, $precio_max = null, $offset = 0, $limit = 12) {
         $sql = "SELECT p.*, c.nombre as categoria_nombre 
                 FROM productos p 
                 LEFT JOIN categorias c ON p.categoria_id = c.id 
@@ -43,25 +43,19 @@ class Producto {
 
         $params = [];
 
-        if (!is_null($categoria_id)) {
+        if (!empty($categoria_id)) {
             $sql .= " AND p.categoria_id = :categoria_id";
             $params[':categoria_id'] = $categoria_id;
         }
 
-        if (!is_null($precio_min)) {
+        if (!is_null($precio_min) && $precio_min !== '') {
             $sql .= " AND p.precio >= :precio_min";
             $params[':precio_min'] = $precio_min;
         }
 
-        if (!is_null($precio_max)) {
+        if (!is_null($precio_max) && $precio_max !== '') {
             $sql .= " AND p.precio <= :precio_max";
             $params[':precio_max'] = $precio_max;
-        }
-
-        if (!empty($busqueda)) {
-            $sql .= " AND (p.nombre LIKE :busqueda OR c.nombre LIKE :busqueda2)";
-            $params[':busqueda'] = "%{$busqueda}%";
-            $params[':busqueda2'] = "%{$busqueda}%";
         }
 
         $sql .= " ORDER BY p.id ASC LIMIT :offset, :limit";
@@ -69,7 +63,11 @@ class Producto {
         $stmt = $this->pdo->prepare($sql);
 
         foreach ($params as $key => &$val) {
-            $stmt->bindValue($key, $val, PDO::PARAM_STR);
+            if ($key === ':offset' || $key === ':limit') {
+                $stmt->bindValue($key, (int)$val, PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue($key, $val, PDO::PARAM_STR);
+            }
         }
 
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
@@ -80,32 +78,26 @@ class Producto {
     }
 
     // Obtener total de productos filtrados (para la paginación)
-    public function getTotalFiltered($categoria_id = null, $precio_min = null, $precio_max = null, $busqueda = null) {
+    public function getTotalFiltered($categoria_id = null, $precio_min = null, $precio_max = null) {
         $sql = "SELECT COUNT(*) FROM productos p 
                 LEFT JOIN categorias c ON p.categoria_id = c.id 
                 WHERE p.activo = 1";
 
         $params = [];
 
-        if (!is_null($categoria_id)) {
+        if (!empty($categoria_id)) {
             $sql .= " AND p.categoria_id = :categoria_id";
             $params[':categoria_id'] = $categoria_id;
         }
 
-        if (!is_null($precio_min)) {
+        if (!is_null($precio_min) && $precio_min !== '') {
             $sql .= " AND p.precio >= :precio_min";
             $params[':precio_min'] = $precio_min;
         }
 
-        if (!is_null($precio_max)) {
+        if (!is_null($precio_max) && $precio_max !== '') {
             $sql .= " AND p.precio <= :precio_max";
             $params[':precio_max'] = $precio_max;
-        }
-
-        if (!empty($busqueda)) {
-            $sql .= " AND (p.nombre LIKE :busqueda OR c.nombre LIKE :busqueda2)";
-            $params[':busqueda'] = "%{$busqueda}%";
-            $params[':busqueda2'] = "%{$busqueda}%";
         }
 
         $stmt = $this->pdo->prepare($sql);

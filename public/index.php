@@ -139,25 +139,26 @@ $rango_precios = $data['rango_precios'];
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="precio-slider" class="form-label">Rango de Precio</label>
-                        <div id="precio-slider"></div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span id="precio-min-label"></span>
-                            <span id="precio-max-label"></span>
-                        </div>
-                        <input type="hidden" id="precio_min" name="precio_min" value="<?= $precio_min ?? $rango_precios['min_precio'] ?>">
-                        <input type="hidden" id="precio_max" name="precio_max" value="<?= $precio_max ?? $rango_precios['max_precio'] ?>">
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
-                        <a href="index.php" class="btn btn-secondary">Restablecer Filtros</a>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-9">
-                <div class="mb-3">
-                    <input type="text" id="busqueda" class="form-control" placeholder="Buscar productos...">
-                </div>
+    <label for="precio-slider" class="form-label">Rango de Precio</label>
+    <div id="precio-slider"></div>
+    <div class="d-flex justify-content-between mt-2">
+        <span id="precio-min-label"></span>
+        <span id="precio-max-label"></span>
+    </div>
+    <input type="hidden" id="precio_min" name="precio_min" value="<?= isset($precio_min) && $precio_min !== '' ? $precio_min : ($rango_precios['min_precio'] ?? 0) ?>">
+    <input type="hidden" id="precio_max" name="precio_max" value="<?= isset($precio_max) && $precio_max !== '' ? $precio_max : ($rango_precios['max_precio'] ?? 1000) ?>">
+</div>
+<div class="d-flex gap-2">
+    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+    <a href="index.php" class="btn btn-secondary">Restablecer Filtros</a>
+</div>
+</form>
+</div>
+<div class="col-md-9">
+    <div class="mb-3">
+        <input type="text" id="busqueda" class="form-control" placeholder="Buscar productos...">
+    </div>
+
                 <?php if ($productos): ?>
                     <div id="productos-container" class="row row-cols-1 row-cols-md-3 g-4">
                         <?php foreach ($productos as $producto): ?>

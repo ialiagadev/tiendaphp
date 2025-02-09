@@ -26,6 +26,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Crear Nueva Categoría</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            flex: 1;
+        }
+        footer {
+            background: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <?php include("../app/components/admin_navbar.php"); ?>
@@ -64,7 +79,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
 </div>
 
-<?php include("../app/components/footer.php"); ?>
+<footer>
+    <?php include("../app/components/footer.php"); ?>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

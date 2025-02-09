@@ -8,23 +8,30 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
     exit;
 }
 
-// Verificar si se proporciona un ID válido
-if (!isset($_GET["id"]) || empty($_GET["id"])) {
+$categoriaController = new CategoriaController();
+
+// Asegurar que el método de solicitud sea POST
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    $_SESSION["error"] = "❌ Acción no permitida.";
     header("Location: categorias.php");
     exit;
 }
 
-$categoriaController = new CategoriaController();
-$id = $_GET["id"];
+// Validar el ID de la categoría
+if (!isset($_POST["id"]) || !is_numeric($_POST["id"])) {
+    $_SESSION["error"] = "❌ ID de categoría no válido.";
+    header("Location: categorias.php");
+    exit;
+}
+
+$id = intval($_POST["id"]);
 
 // Intentar eliminar la categoría
-$resultado = $categoriaController->eliminarCategoria($id);
-
-// Redirigir con mensaje de éxito o error
-if ($resultado) {
+if ($categoriaController->eliminarCategoria($id)) {
     $_SESSION['success'] = "✅ Categoría eliminada correctamente.";
 } else {
     $_SESSION['error'] = "❌ No se pudo eliminar la categoría.";
 }
+
 header("Location: categorias.php");
 exit;
