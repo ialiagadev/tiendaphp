@@ -76,18 +76,19 @@ class PedidoController {
         $usuario_id = $_SESSION['usuario']['id'];
         $pedido = $this->pedidoModel->obtenerPedido($pedido_id);
     
-        if (!$pedido || $pedido[0]['usuario_id'] != $usuario_id) {
+        if (!$pedido || empty($pedido) || $pedido[0]['usuario_id'] != $usuario_id) {
             $_SESSION['error'] = "Pedido no encontrado o no tienes permiso para verlo.";
             header("Location: mis_pedidos.php");
             exit();
         }
     
-        // Pasar la información del pedido a la vista
+        // Guardar la información del pedido en sesión
         $_SESSION['pedido_detalle'] = $pedido;
-        
+    
         header("Location: detalle_pedido.php");
         exit();
     }
+    
     
 
     // Cancelar un pedido

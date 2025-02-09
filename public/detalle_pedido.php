@@ -12,12 +12,14 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-if (!isset($_SESSION['pedido_detalle'])) {
+// Verificar si la información del pedido está en la sesión
+if (!isset($_SESSION['pedido_detalle']) || empty($_SESSION['pedido_detalle'])) {
     die("Error: No se encontró la información del pedido.");
 }
 
 $pedido = $_SESSION['pedido_detalle'];
 unset($_SESSION['pedido_detalle']); // Limpiar la sesión después de obtener los datos
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
