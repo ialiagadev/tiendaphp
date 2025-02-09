@@ -47,6 +47,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <button type="submit" class="btn btn-success">Actualizar Contraseña</button>
         </form>
+
+        <!-- Botón de Iniciar Sesión -->
+        <div class="text-center mt-3">
+            <a href="login.php" class="btn btn-primary">Iniciar Sesión</a>
+        </div>
     </div>
 </body>
 </html>
