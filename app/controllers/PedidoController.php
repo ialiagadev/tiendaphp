@@ -72,18 +72,23 @@ class PedidoController {
             header("Location: login.php");
             exit();
         }
-
+    
         $usuario_id = $_SESSION['usuario']['id'];
         $pedido = $this->pedidoModel->obtenerPedido($pedido_id);
-
+    
         if (!$pedido || $pedido[0]['usuario_id'] != $usuario_id) {
             $_SESSION['error'] = "Pedido no encontrado o no tienes permiso para verlo.";
             header("Location: mis_pedidos.php");
             exit();
         }
-
-        require_once __DIR__ . "/../views/detalle_pedido.php";
+    
+        // Pasar la información del pedido a la vista
+        $_SESSION['pedido_detalle'] = $pedido;
+        
+        header("Location: detalle_pedido.php");
+        exit();
     }
+    
 
     // Cancelar un pedido
     public function cancelarPedido($pedido_id) {
