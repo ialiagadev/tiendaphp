@@ -43,20 +43,37 @@ $paginaActual = $resultado['paginaActual'];
                             <th>Fecha</th>
                             <th>Total</th>
                             <th>Estado</th>
+                            <th>Productos Comprados</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($pedidos as $pedido): ?>
+                        <?php foreach ($pedidos as $pedido): 
+                            $productos = $pedidoController->obtenerProductosPorPedido($pedido['id']);
+                        ?>
                             <tr>
                                 <td><?= $pedido['id'] ?></td>
                                 <td><?= $pedido['fecha'] ?></td>
                                 <td>$<?= number_format($pedido['total'], 2) ?></td>
                                 <td><?= ucfirst($pedido['estado']) ?></td>
                                 <td>
-                                    <a href="detalle_pedido.php?id=<?= $pedido['id'] ?>" class="btn btn-info btn-sm">Ver detalles</a>
+                                    <ul>
+                                        <?php foreach ($productos as $producto): ?>
+                                            <li>
+                                                <?= htmlspecialchars($producto['nombre_producto']) ?> - 
+                                                <?= $producto['cantidad'] ?> x $<?= number_format($producto['precio_unitario'], 2) ?>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </td>
+                                <td>
                                     <?php if ($pedido['estado'] == 'pendiente' || $pedido['estado'] == 'procesando'): ?>
-                                        <a href="cancelar_pedido.php?id=<?= $pedido['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas cancelar este pedido?');">Cancelar</a>
+                                        <a href="cancelar_pedido.php?id=<?= $pedido['id'] ?>" class="btn btn-danger btn-sm" 
+                                           onclick="return confirm('¿Estás seguro de que deseas cancelar este pedido?');">
+                                            Cancelar
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted">No disponible</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -83,4 +100,3 @@ $paginaActual = $resultado['paginaActual'];
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
