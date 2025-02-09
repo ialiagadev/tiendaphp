@@ -1,4 +1,10 @@
 RewriteEngine On
+
+# Evitar que se redirija a /public/ cuando se accede a admin/
+RewriteCond %{REQUEST_URI} !^/admin/
+
+# Regla existente para redirigir las demás rutas a /public/
 RewriteCond %{REQUEST_URI} !^/public/
 RewriteRule ^(.*)$ /public/$1 [L]
+
 DirectoryIndex /public/index.php
