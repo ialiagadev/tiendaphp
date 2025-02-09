@@ -10,11 +10,25 @@ class ProductoController {
         $this->productoModel = new Producto();
         $this->categoriaModel = new Categoria();
     }
-
-    // Obtener detalles de un producto por ID
+    // Obtener detalles de un producto
     public function detalle($id) {
-        return $this->productoModel->getById($id);
+        if (!isset($id) || empty($id)) {
+            header("Location: index.php");
+            exit();
+        }
+
+        $producto = $this->productoModel->getById($id);
+
+        if (!$producto) {
+            $_SESSION['error'] = "El producto no existe.";
+            header("Location: index.php");
+            exit();
+        }
+
+        include __DIR__ . "/../views/detalle.php";
     }
+
+
 
     // Agregar un nuevo producto con validaciones
     public function agregarProducto($datos) {

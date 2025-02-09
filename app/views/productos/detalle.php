@@ -1,3 +1,20 @@
+<?php
+require_once __DIR__ . "/../app/controllers/ProductoController.php";
+
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    header("Location: index.php");
+    exit();
+}
+
+$controller = new ProductoController();
+$producto = $controller->productoModel->getById($_GET['id']);
+
+if (!$producto) {
+    $_SESSION['error'] = "El producto no existe.";
+    header("Location: index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,60 +23,9 @@
     <title><?= htmlspecialchars($producto['nombre']) ?> - Tienda Online</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-        main {
-            flex: 1 0 auto;
-        }
-        .product-image-container {
-            position: relative;
-            width: 100%;
-            padding-top: 75%; /* Aspect ratio 4:3 */
-            overflow: hidden;
-            border-radius: 8px;
-        }
-        .product-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background-color: #f8f9fa;
-        }
-        .card {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            border: none;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,.1);
-        }
-        .footer {
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-            margin-top: 2rem;
-        }
-    </style>
 </head>
 <body>
-<?php include_once "../app/components/navbar.php"; ?>
+    <?php include_once "../app/components/navbar.php"; ?>
 
     <main class="container my-5">
         <div class="row justify-content-center">
@@ -68,7 +34,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <div class="product-image-container">
-                                <img src="<?= htmlspecialchars($producto['imagen']) ?>" alt="<?= htmlspecialchars($producto['nombre']) ?>" class="product-image">
+                                <img src="<?= htmlspecialchars($producto['imagen']) ?>" alt="<?= htmlspecialchars($producto['nombre']) ?>" class="img-fluid">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -79,7 +45,7 @@
                             <p><strong>Stock:</strong> <?= $producto['stock'] ?> unidades</p>
 
                             <?php if ($producto['stock'] > 0): ?>
-                                <form action="../public/carrito.php" method="GET" class="mb-4">
+                                <form action="carrito.php" method="GET" class="mb-4">
                                     <input type="hidden" name="accion" value="agregar">
                                     <input type="hidden" name="id" value="<?= $producto['id'] ?>">
                                     <div class="mb-3">
@@ -105,12 +71,6 @@
             </div>
         </div>
     </main>
-
-    <footer class="footer mt-auto">
-        <div class="container">
-            <p class="mb-0">&copy; 2023 Tienda Online. Todos los derechos reservados.</p>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

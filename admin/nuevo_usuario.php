@@ -61,7 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="rol" class="form-label">Rol:</label>
                 <select id="rol" name="rol" class="form-select" required>
                     <option value="cliente">Cliente</option>
-                    <option value="empleado">Empleado</option>
                     <option value="admin">Administrador</option>
                 </select>
             </div>
