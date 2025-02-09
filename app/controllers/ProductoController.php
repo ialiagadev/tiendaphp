@@ -55,7 +55,8 @@ class ProductoController {
         $actualizado = $this->productoModel->actualizar($id, $datos);
         return $actualizado ? ['success' => true] : ['error' => 'No se pudo actualizar el producto'];
     }
-
+  
+    
     // Eliminar un producto (baja lógica)
     public function eliminarProducto($id) {
         $eliminado = $this->productoModel->eliminar($id);

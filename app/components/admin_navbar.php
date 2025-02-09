@@ -21,6 +21,12 @@ if (session_status() == PHP_SESSION_NONE) {
             </ul>
 
             <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="btn btn-primary me-2" href="../public/index.php">
+                        <i class="fas fa-store me-1"></i> Volver a la Tienda
+                    </a>
+                </li>
+
                 <?php if (isset($_SESSION['usuario'])): ?>
                     <li class="nav-item">
                         <span class="navbar-text text-light me-3">

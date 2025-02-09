@@ -56,7 +56,7 @@ class UsuarioController {
 
                 // Redirigir según el rol del usuario
                 if ($usuario['rol'] === 'admin') {
-                    header("Location: ../admin/index.php");
+                    header("Location: ../public/index.php");
                 } else {
                     header("Location: ../public/index.php");
                 }

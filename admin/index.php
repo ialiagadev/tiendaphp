@@ -29,6 +29,9 @@
             <li class="list-group-item"><a href="usuarios.php">Gestión de Usuarios</a></li>
             <li class="list-group-item"><a href="categorias.php">Gestión de Categorías</a></li>
             <li class="list-group-item"><a href="productos.php">Gestión de Productos</a></li>
+            <li class="list-group-item"><a href="informes.php">Informes</a></li>
+            <li class="list-group-item"><a href="../public/index.php">Volver a la Tienda</a></li>
+
             <li class="list-group-item"><a href="../public/logout.php" class="text-danger">Cerrar Sesión</a></li>
         </ul>
     </div>

@@ -182,8 +182,8 @@ $rango_precios = $data['rango_precios'];
                                             <small class="text-muted">Categoría: <?= htmlspecialchars($producto['categoria_nombre']) ?></small>
                                         </p>
                                         <div class="mt-auto d-flex flex-column gap-2">
-                                            <a href="producto.php?id=<?= $producto['id'] ?>" class="btn btn-outline-primary btn-sm">
-                                                <i class="fas fa-info-circle me-1"></i>Ver Detalles
+                                        <a href="producto.php?id=<?= $producto['id'] ?>" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-info-circle me-1"></i>Ver Detalles
                                             </a>
                                             <?php if ($producto['stock'] > 0): ?>
                                                 <a href="carrito.php?accion=agregar&id=<?= $producto['id'] ?>" class="btn btn-primary btn-sm btn-add-to-cart">
