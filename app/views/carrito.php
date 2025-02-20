@@ -190,13 +190,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function updateQuantity(productId, change) {
-            const quantityInput = document.getElementById(`quantity-${productId}`);
-            let newQuantity = parseInt(quantityInput.value) + change;
-            if (newQuantity > 0) {
-                quantityInput.value = newQuantity;
-                window.location.href = `carrito.php?accion=actualizar&id=${productId}&cantidad=${newQuantity}`;
-            }
+      function updateQuantity(productId, change) {
+    const quantityInput = document.getElementById(`quantity-${productId}`);
+    let newQuantity = parseInt(quantityInput.value) + change;
+
+    if (newQuantity > 0) {
+        fetch(`carrito.php?accion=actualizar&id=${productId}&cantidad=${newQuantity}`)
+            .then(response => response.text())
+            .then(() => {
+                location.reload(); // Recargar la página para reflejar los cambios en la sesión
+            })
+            .catch(error => console.error('Error actualizando la cantidad:', error));
+    }
+}
+
         }
     </script>
 </body>

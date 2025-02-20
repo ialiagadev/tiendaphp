@@ -53,7 +53,7 @@ try {
         'line_items' => $line_items,
         'mode' => 'payment',
         // URL de éxito: redirige a success.php pasando el ID del pedido y la sesión de Stripe
-        'success_url' => 'https://cornflowerblue-alpaca-573297.hostingersite.com/success.php?pedido_id=' . $pedido_id . '&session_id={CHECKOUT_SESSION_ID}',
+'success_url' => 'https://cornflowerblue-alpaca-573297.hostingersite.com/public/pedido_confirmado.php?pedido_id=' . $pedido_id . '&session_id={CHECKOUT_SESSION_ID}',
 'cancel_url'  => 'https://cornflowerblue-alpaca-573297.hostingersite.com/carrito.php',
 
     ]);

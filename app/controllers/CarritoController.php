@@ -27,6 +27,15 @@ class CarritoController {
     public function obtenerTotal() {
         return $this->carrito->obtenerTotal();
     }
+    // Actualizar cantidad de un producto en el carrito
+public function actualizarCantidad($id, $cantidad) {
+    if ($cantidad > 0) {
+        $_SESSION['carrito'][$id]['cantidad'] = $cantidad;
+    }
+    header("Location: carrito.php");
+    exit();
+}
+
 
     // Agregar un producto al carrito
     public function agregar($id) {
