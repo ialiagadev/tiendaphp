@@ -21,11 +21,17 @@ class Carrito {
         }
     }
 // Actualizar la cantidad de un producto en el carrito
+// Actualizar la cantidad de un producto en el carrito
 public function actualizarCantidad($id, $cantidad) {
-    if (isset($_SESSION['carrito'][$id]) && $cantidad > 0) {
-        $_SESSION['carrito'][$id]['cantidad'] = $cantidad;
+    if (isset($_SESSION['carrito'][$id])) {
+        if ($cantidad > 0) {
+            $_SESSION['carrito'][$id]['cantidad'] = $cantidad;
+        } else {
+            unset($_SESSION['carrito'][$id]); // Eliminar el producto si la cantidad es 0
+        }
     }
 }
+
 
     // Obtener todos los productos en el carrito
     public function obtenerCarrito() {

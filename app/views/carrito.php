@@ -1,3 +1,27 @@
+<?php
+session_start();
+require_once __DIR__ . "/../controllers/CarritoController.php";
+
+$carritoController = new CarritoController();
+$productos = $carritoController->obtenerCarrito();
+$total = $carritoController->obtenerTotal();
+
+// Manejar acciones desde la URL
+if (isset($_GET['accion'])) {
+    $accion = $_GET['accion'];
+    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    $cantidad = isset($_GET['cantidad']) ? intval($_GET['cantidad']) : 1;
+
+    if ($accion === 'actualizar' && $id > 0) {
+        $carritoController->actualizarCantidad($id, $cantidad);
+    } elseif ($accion === 'eliminar' && $id > 0) {
+        $carritoController->eliminar($id);
+    } elseif ($accion === 'vaciar') {
+        $carritoController->vaciar();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,85 +31,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-        main {
-            flex: 1 0 auto;
-        }
-        .card {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            border: none;
-            border-radius: 10px;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,.1);
-        }
-        .table-responsive {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-        }
-        .table th {
-            background-color: #f8f9fa;
-            color: #495057;
-            border: none;
-            font-weight: 600;
-        }
-        .table td {
-            vertical-align: middle;
-        }
-        .btn {
-            border-radius: 5px;
-            padding: 8px 16px;
-            transition: all 0.2s ease;
-            font-weight: 500;
-        }
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #ced4da;
-        }
-        .btn-outline-secondary:hover {
-            color: #495057;
-            background-color: #e9ecef;
-        }
-        .footer {
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-            margin-top: 2rem;
-        }
-        .quantity-input {
-            max-width: 60px;
-            text-align: center;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-        .quantity-btn {
-            width: 30px;
-            height: 30px;
-            padding: 0;
-            line-height: 30px;
-            font-size: 14px;
-        }
+        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        .navbar-brand { font-weight: bold; font-size: 1.5rem; }
+        main { flex: 1 0 auto; }
+        .card { transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; border: none; border-radius: 10px; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,.1); }
+        .table-responsive { border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0, 0, 0, 0.05); }
+        .table th { background-color: #f8f9fa; color: #495057; border: none; font-weight: 600; }
+        .table td { vertical-align: middle; }
+        .btn { border-radius: 5px; padding: 8px 16px; transition: all 0.2s ease; font-weight: 500; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-outline-secondary { color: #6c757d; border-color: #ced4da; }
+        .btn-outline-secondary:hover { color: #495057; background-color: #e9ecef; }
+        .footer { background-color: #343a40; color: white; text-align: center; padding: 1rem 0; margin-top: 2rem; }
+        .quantity-input { max-width: 60px; text-align: center; border: 1px solid #ced4da; border-radius: 5px; font-size: 0.9rem; }
+        .quantity-btn { width: 30px; height: 30px; padding: 0; line-height: 30px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -98,13 +59,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link active" href="carrito.php"><i class="fas fa-shopping-cart me-1"></i>Carrito</a></li>
-                    <?php if (isset($_SESSION['usuario'])): ?>
-                        <li class="nav-item"><span class="nav-link"><i class="fas fa-user me-1"></i>Hola, <?= htmlspecialchars($_SESSION['usuario']['nombre']) ?></span></li>
-                        <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt me-1"></i>Cerrar Sesión</a></li>
-                    <?php else: ?>
-                        <li class="nav-item"><a class="nav-link" href="login.php"><i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión</a></li>
-                        <li class="nav-item"><a class="nav-link" href="registro.php"><i class="fas fa-user-plus me-1"></i>Registrarse</a></li>
-                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -184,16 +138,15 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      function updateQuantity(productId, change) {
-          const quantityInput = document.getElementById(`quantity-${productId}`);
-          let newQuantity = parseInt(quantityInput.value) + change;
+        function updateQuantity(productId, change) {
+            const quantityInput = document.getElementById(`quantity-${productId}`);
+            let newQuantity = parseInt(quantityInput.value) + change;
 
-          if (newQuantity > 0) {
-              window.location.href = `carrito.php?accion=actualizar&id=${productId}&cantidad=${newQuantity}`;
-          }
-      }
+            if (newQuantity >= 0) {
+                window.location.href = `carrito.php?accion=actualizar&id=${productId}&cantidad=${newQuantity}`;
+            }
+        }
     </script>
 </body>
 </html>
