@@ -175,8 +175,6 @@
             <a href="index.php" class="btn btn-outline-primary">
                 <i class="fas fa-arrow-left me-1"></i>Seguir Comprando
             </a>
-            <form action="/TIENDA/public/stripe_checkout.php" method="POST">
-</form>
         </div>
     </main>
 
@@ -184,27 +182,18 @@
         <div class="container">
             <p class="mb-0">&copy; 2025 Tienda Online. Todos los derechos reservados.</p>
         </div>
-       
-
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       function updateQuantity(productId, change) {
-    const quantityInput = document.getElementById(`quantity-${productId}`);
-    let newQuantity = parseInt(quantityInput.value) + change;
+          const quantityInput = document.getElementById(`quantity-${productId}`);
+          let newQuantity = parseInt(quantityInput.value) + change;
 
-    if (newQuantity > 0) {
-        fetch(`carrito.php?accion=actualizar&id=${productId}&cantidad=${newQuantity}`)
-            .then(response => response.text())
-            .then(() => {
-                location.reload(); // Recargar la página para reflejar los cambios en la sesión
-            })
-            .catch(error => console.error('Error actualizando la cantidad:', error));
-    }
-}
-
-        }
+          if (newQuantity > 0) {
+              window.location.href = `carrito.php?accion=actualizar&id=${productId}&cantidad=${newQuantity}`;
+          }
+      }
     </script>
 </body>
 </html>
